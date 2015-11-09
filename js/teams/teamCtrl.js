@@ -23,9 +23,13 @@ app.controller('teamCtrl', function ($scope, $stateParams, teamData, teamService
   $scope.submitGame = function() {
     $scope.newGame.homeTeam = $scope.homeTeam.split('').join('').toLowerCase();
     teamService.addNewGame($scope.newGame)
-      .then(teamService.getTeamData($scope.newGame.homeTeam))
+      .then(function(res) {
+        return teamService.getTeamData($stateParams.team)
+      })
       .then(function(data) {
+        console.log(data)
         $scope.teamData = data;
+        console.log($scope.teamData);
         $scope.newGame = {};
         $scope.showNewGameForm = false;
       });

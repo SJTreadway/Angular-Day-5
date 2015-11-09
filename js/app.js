@@ -17,7 +17,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         controller: 'teamCtrl',
         resolve: {
           teamData: function(teamService, $stateParams) {
-            // console.log(teamService.getTeamData($stateParams.team))
           return teamService.getTeamData($stateParams.team);
         }
       }

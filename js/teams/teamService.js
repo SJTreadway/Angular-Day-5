@@ -6,11 +6,11 @@ app.service('teamService', function ($http, $q) {
     this.addNewGame = function(gameObj) {
       var url = 'https://api.parse.com/1/classes/' + gameObj.homeTeam;
       if (parseInt(gameObj.homeTeamScore) > parseInt(gameObj.opponentScore)) {
-        this.won = 'true';
+        gameObj.won = true;
       } else {
-        this.won = 'false';
+        gameObj.won = false;
       }
-      return $http({
+        return $http({
         method: 'POST',
         url: url,
         data: gameObj,
@@ -19,11 +19,13 @@ app.service('teamService', function ($http, $q) {
 
     this.getTeamData = function(team) {
       var deferred = $q.defer();
-      var url = 'https://api.parse.com/1/classes/' + team;
+      console.log('team', team)
+      var url = 'https://api.parse.com/1/classes/' + team + '?order=-createdAt';
       $http({
         method: 'GET',
         url: url,
       }).then(function(data) {
+        console.log('data:', data)
         var results = data.data.results;
         var wins = 0;
         var losses = 0;
@@ -34,11 +36,13 @@ app.service('teamService', function ($http, $q) {
             losses++;
           }
         }
-        results.wins = wins;
-        results.losses = losses;
-        deferred.resolve(results.wins, results.losses);
-        console.log(deferred.promise)
-        return deferred.promise;
+        var responseObj = {
+          gamesArray: results,
+          wins: wins,
+          losses: losses,
+        };
+        deferred.resolve(responseObj);
       })
+        return deferred.promise;
     }
 });
